@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require "xres2tlx"
+Xres2tlx.init(ARGV)
