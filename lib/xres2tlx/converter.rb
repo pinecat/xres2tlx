@@ -12,7 +12,7 @@ class Converter
 
     # Set the xres_filepath
     @xres_filepath = filepath
-    @unordered_pref = {palette: []}
+    @unordered_pref = {palette: {}}
     @tlx_pref = nil
   end
 
@@ -37,10 +37,13 @@ class Converter
         # Palette
         # Only set palette if line just includes "color", NOT "colorBD"
         unless line.include? "colorBD"
-          @unordered_pref[:palette].push(color) if line.include? "color"
+          @unordered_pref[:palette][line.split(":").first.scan(/\d/).join("").to_i] = color if line.include? "color"
         end
       end
     end
+
+    # Sort colors
+    @unordered_pref[:palette] = @unordered_pref[:palette].sort.to_h
   end
 
   def set_tlx_pref
@@ -55,7 +58,7 @@ class Converter
       "highlight-background-color": "#000000",
       "highlight-foreground-color": "#FFFFFF",
       name: @xres_filepath.split("/").last.strip.chomp,
-      palette: @unordered_pref[:palette],
+      palette: @unordered_pref[:palette].values,
       "use-badge-color": false,
       "use-bold-color": true,
       "use-cursor-color": true,
